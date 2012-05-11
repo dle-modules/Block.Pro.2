@@ -12,6 +12,71 @@ email: p13mm@yandex.ru
 Версия: 2.6 (11.05.2012)
 =====================================================*/
 
+/*История изменений:
+	v.2.6 (RC)
+	- Добавлена фильтрация новостей по автору. (нужно указать в строке подключения переменную &author={usertitle} для вывода новостей автора на странице его профиля) спасибо nowheremany за идею реализации.
+	- Добавлена фильтрация по дополнительным полям, в фильтр попадают только новости, у которых заполнено указанное дополнительное поле (в строке подключения нужно указать переменную &xfilter=image, text - в этом случаи будут отобранны только те новости, в которых заполненны допполя image и text)
+	- Обновлён ввывод рейтинга.
+	- Добавлен тег {category-url}.
+	
+	!!- Пока что закомментировал код проверки адресов картинок, на локалке работают картинки со сторонних сайтов, нжно проверять на хостинге.
+	
+	v.2.5.1
+	- Модуль адаптирован под DLE 9.6
+	- Функция показа похожих овостей временно не работает.
+	
+	v.2.5
+	- Финальная версия, больше изменений делать не планирую.
+	- Исправленны все заявленные ошибки.
+	
+	v.2.5 (RC от 16.03.2012) - проверены окончательно не все функции!
+	- В очередной раз всё перелопатил, исправил косяки и неровности, и немалую лепту внёс опять Роман (Giseg), за что ему опять ещё большее спасибо!
+	- Добавлена возможность вывода новостей только из той категории, в которй находится пользователь, либо из всех, кроме текущей (при указании переменной &ignore_cat, каждый блок по преждему кешируется.
+	- Добавлена возможность быстрого радактирования новостей прямо из блока, аналогично стандартному функционалу.
+	- Добавлена поддержка фильтра (перекрестные ссылки) по допполям, реализованного в DLE9.5.
+	- Немного улучшена процедура формирования запросов в БД.
+	- Можно указать с какой новости начать вывод, для этого в строке подключения нужно указать переменную &start_from=1 (в этом случаи вывод начнётся со второй, попавшей в диапазон, новости). По умолчанию переменная равна нулю и выводятся все новости. Это может понадобиться, когда нужно вывести одну или две новости с одним шаблоном, а остальные с другим).
+	- Устранены ошибки при обработке картинок в новости (добавлена дополнительная проверка, что бы картинки со сторонних сайтов уж точно не пролазили и не вызывали глюков))).
+	- Добавлена возможность выводить оригинальную картинку, не обрезая её (в строке подключения достаточно указать &img_size=0).
+	- Добавлен вывод оригинальной картинки, если происходит её уменьшение. Для этого в шаблон нужно вставить тег {original_img}. Так же доступны теги [image_original]текст[/image_original] и [not-image_original]текст[/not-image_original] которые выводят текст если есть или нет картинки.
+	- Добавлен вывод рейтинга.
+	- Добавлена возможность более тонкой сортировки новостей - по количеству комментариев (в строке подключения указываем &top_comm=y), по рейтингу (&top_rating=y), по просмотрам (&top_views=y). ВНИМАНИЕ! - не указывайте одновременно несколько вариантов сортировки
+	- Добавлена возможность отключать кеширование блока непосредственно в строке подключения, для этого в строке подключения нужно указать переменную &nocache=y (пригодится в процессе настройки блока).
+	- Для картинки-заглушки введена переменная &noimage в которой можно задать название файла (имя и расширение) для картинки-заглушки (по умолчанию эта переменная имеет вид:  &noimage=noimage.png). картинка-заглушка по прежнему должна лежать в папке images текущего шаблона.
+	- Переменная &category заменена на &show_cat (обнаружил, что в DLE есть глобальная переменная $category, переименовал на всякий случай).
+	- Переменная &bad заменена на &ignore_cat для большей внятности кода.
+	- Исправлена переменная {comm_num} на {comments-num} как она пишется в стандартных шаблонах DLE.
+	- [админам] Возможность выводить время выполнения модуля. Пригодится для отладки (видеть будет только группа id=1) Смотрите закомментрованные строки ниже в коде и в самом конце файла.
+	
+	v.2.4
+	- Добавлено автоматическое создание папки blockpro и установка необходимых прав, даже если они были сбиты (например при переезде на новый хостинг).
+	- Изменена методика создания уменьшенных копий картинок - теперь скрипт берёт только те картинки, которые лежат в папке uploads сайта (все картинки, которые загружаются на сайт обычно туда и попадают). Если картинка будет лежать на сторонем сайте она будет проигнорирована и вместо неё выведется заглушка. Это сделано в целях безопасности сайта и устраниения проблемы с белым листом (Not Supported File! Thumbnails can only be made from .jpg, gif and .png images!), которая возникала при определённых обстоятельствах.
+	- За изменения в этой версии отдельное спасибо отличному пограммисту Роману (Giseg), если бы не он - врядли были бы эти важные исправления!
+	
+	v.2.3
+	- Исправлена ошибка, работы с категориями. При указании категорий, из которых следует выводить новости, они наоборот скрывались.
+	- Изменен синтаксис перечисления категорий для вывода/скрытия. Теперь категории нужно перечислять через запятую, по аналогии с тем же custom к примеру.
+	
+	v.2.2 
+	- Добавлена возможность подключить модуль для вывода похожих новостей (отдельное спасибо Sander`у за исправление моих косяков при перелопачивании кода).
+	- Переписаны имена "модульных" переменных, чтоб не было конфликтов при выводе похожих новостей.
+	
+	v.2.1(релиза не было):
+	- Исправлена и оптимизирована функция обрезания содержимого новостей (в некоторыx, непонятныx для меня случаяx содержимое обрезалось полностью). За доработку спасибо nowheremany.
+	- Изменён вывод блока с новостями. Теперь блок выводится без "обёртки" в общий div с id равным переменной &block_id. (исправлено на случай использования в шаблоне для обёртки новости тегов <li></li> и оборачивания строки подключения в <ul></ul>. В этом случаи блок не проxодил валидацию и не корректно обрабатывался в качестве слайдера (плагин jcarousel)
+	- Исправлены мелкие ошибки, допущенные в прошлой версии по невнимательности или лени )))
+	
+	v.2.0:
+	- код модуля переработан.
+	- модуль переведён на работу с шаблонами.
+	- убраны лишние комментарии, тот кто разбирается и так поймёт, а чайнику дорога на www.dle-faq.pro
+	
+    v.1.1:
+    - добавлена функция bad - при указании в строке подключений переменной &bad=y - категории, указанные в переменной &category - будут исключены из вывода.
+    - добавлена пара примеров строк вызова модуля.
+    
+=====================================================*/
+
 if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
 
 //показываем админу время выполнения скрипта (раскомментировать для показа эту строку и в конце ещё одну)
@@ -30,13 +95,11 @@ if(!is_string($template))		$template = "";
 if(!is_string($author))			$author = "";
 if(!is_string($xfilter))		$xfilter = "";
 
+$img_size = intval($chk_img_size[0]).((count($chk_img_size)>=2)?'x'.intval($chk_img_size[1]):''); // Мало ли идиотов
 $author = @$db->safesql ( strip_tags ( str_replace ( '/', '', $author ) ) );
-
 $xfilter = @$db->safesql ( strip_tags ( str_replace ( '/', '', $xfilter ) ) );
 
-
 if(floatval($config['version_id'])>=9.6) $new_version = 1; //контроль версий DLE.
-			
 
 if($nocache) {
 	$config['allow_cache'] = "no";
@@ -61,23 +124,13 @@ if( !$blockpro ) {
 		@chmod($dir, 0777);
 	}
 	
-	if($relatedpro) {
-		if($new_version) {
-		//////////////////////////////
-		//тут будет код для DLE 9.6+//
-		//////////////////////////////
-		}
-		else {
-			if( strlen( $row['full_story'] ) < strlen( $row['short_story'] ) ) $body = $row['short_story'];
-			else $body = $row['full_story'];
-			$body = $db->safesql( strip_tags( stripslashes( $metatags['title'] . " " . $body ) ) );	
-		}	
-	}
-
 	if($template){	
-	
-		$tplb = new dle_template();
-		$tplb->dir = TEMPLATE_DIR;
+		
+		global $tplb;
+		if(!isset($tplb)) {
+			$tplb = new dle_template();
+			$tplb->dir = TEMPLATE_DIR;
+		}
 				
 		$tplb->load_template ( $template.'.tpl' );
 		
@@ -103,19 +156,29 @@ if( !$blockpro ) {
 		
 		if($author) $query_mod .= "AND autor='{$author}'";
 		
-		
-		if($new_version) {
-			//Запрсы для версии 9.6+
-			if($relatedpro) {
-				$tb = $db->query(/*что тут писать - хз*/);
-			} else {			
-				$tb = $db->query("SELECT p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.comm_num, e.news_read, e.allow_rate, e.rating, e.vote_num, e.votes FROM " . PREFIX . "_post p LEFT JOIN " . PREFIX . "_post_extras e ON (p.id=e.news_id) WHERE p.approve=1 {$query_mod} ORDER BY {$sort_var} LIMIT ".$start_from.",".$news_num); 
-			}		
-		}
-		else {
-			//Запросы для версий <9.6
-			if($relatedpro) {
+		if($relatedpro) {
+			if( strlen( $row['full_story'] ) < strlen( $row['short_story'] ) ) $body = $row['short_story'];
+			else $body = $row['full_story'];
+			$body = $db->safesql( strip_tags( stripslashes( $metatags['title'] . " " . $body ) ) );		
+			if($new_version) {
+				$tb = $db->query("
+SELECT 
+	p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.comm_num, e.news_read, e.allow_rate, e.rating, e.vote_num, e.votes 
+FROM
+	(SELECT
+		p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.comm_num
+	FROM
+		" . PREFIX . "_post p
+	WHERE 
+		MATCH (title, short_story, full_story, xfields) AGAINST ('$body') AND id != " . $row['id'] . " AND approve {$query_mod}
+	) as p
+	LEFT JOIN " . PREFIX . "_post_extras e ON (p.id=e.news_id) LIMIT ".$start_from.",".$news_num); 
+			} else {
 				$tb = $db->query("SELECT id, category, title, news_read, short_story, full_story, autor, xfields, comm_num, date, flag, alt_name, allow_rate, rating, vote_num FROM ".PREFIX."_post WHERE MATCH (title, short_story, full_story, xfields) AGAINST ('$body') AND id != " . $row['id'] . " AND approve=1 {$query_mod} LIMIT ".$start_from.",".$news_num);
+			}
+		} else {
+			if($new_version) {
+				$tb = $db->query("SELECT p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.comm_num, e.news_read, e.allow_rate, e.rating, e.vote_num, e.votes FROM " . PREFIX . "_post p LEFT JOIN " . PREFIX . "_post_extras e ON (p.id=e.news_id) WHERE p.approve=1 {$query_mod} ORDER BY {$sort_var} LIMIT ".$start_from.",".$news_num); 
 			} else {
 				$tb = $db->query("SELECT id, category, title, news_read, short_story, full_story, autor, xfields, comm_num, date, flag, alt_name, allow_rate, rating, vote_num FROM ".PREFIX."_post WHERE approve=1 {$query_mod} ORDER BY {$sort_var} LIMIT ".$start_from.",".$news_num);
 			}
@@ -133,18 +196,16 @@ if( !$blockpro ) {
 			$my_cat_link = array ();
 			$cat_list = explode( ',', $rowb['category'] );
 			foreach ( $cat_list as $element ) {
-			
-				if( $element ) {
+				if( isset($cat_info[$element]) ) {
 					$my_cat[] = $cat_info[$element]['name'];
-					
-					if ($cat_info[$element]['icon']) {
+					if ($cat_info[$element]['icon'])
 						$my_cat_icon[] = "<img class=\"category-icon\" src=\"{$cat_info[$element]['icon']}\" alt=\"{$cat_info[$element]['name']}\" />";
-					} else {
+					else
 						$my_cat_icon[] = "<img class=\"category-icon\" src=\"/templates/".$config['skin']."/images/no_icon.gif\" alt=\"{$cat_info[$element]['name']}\" />";
-					}
-					
-					if( $config['allow_alt_url'] == "yes" ) $my_cat_link[] = "<a href=\"" . $config['http_home_url'] . get_url( $element ) . "/\">{$cat_info[$element]['name']}</a>";
-					else $my_cat_link[] = "<a href=\"$PHP_SELF?do=cat&category={$cat_info[$element]['alt_name']}\">{$cat_info[$element]['name']}</a>";
+					if( $config['allow_alt_url'] == "yes" ) 
+						$my_cat_link[] = "<a href=\"" . $config['http_home_url'] . get_url( $element ) . "/\">{$cat_info[$element]['name']}</a>";
+					else 
+						$my_cat_link[] = "<a href=\"$PHP_SELF?do=cat&category={$cat_info[$element]['alt_name']}\">{$cat_info[$element]['name']}</a>";
 				}
 			}
 			// конец ссылкам
@@ -160,7 +221,6 @@ if( !$blockpro ) {
 			// ссылочка на всю новость
 			$rowb['category'] = intval( $rowb['category'] ); // из всех категорий, берём первую
 			
-			
 			if( $config['allow_alt_url'] == "yes" ) {
 				if($config['seo_type'] == 1 OR $config['seo_type'] == 2) {
 					if( $rowb['category'] and $config['seo_type'] == 2 ) {
@@ -174,34 +234,27 @@ if( !$blockpro ) {
 			} else {
 				$full_link = $config['http_home_url'] . "index.php?newsid=" . $rowb['id'];
 			}
-				
 			// конец ссылкам
 
 			// работаем с доп. полям
 			if( strpos( $tplb->copy_template, "[xfvalue_" ) !== false OR strpos( $tplb->copy_template, "[xfgiven_" ) !== false ) {
-			
 				$xfieldsdata = xfieldsdataload( $rowb['xfields'] );
 				foreach ( $xfields as $value ) {				
 					$preg_safe_name = preg_quote( $value[0], "'" );
-					
 					if ( $value[6] AND !empty( $xfieldsdata[$value[0]] ) ) {
 						$temp_array = explode( ",", $xfieldsdata[$value[0]] );
 						$value3 = array();
-						
 						foreach ($temp_array as $value2) {
 							$value2 = trim($value2);
 							$value2 = str_replace("&#039;", "'", $value2);
 							if( $config['allow_alt_url'] == "yes" ) $value3[] = "<a href=\"" . $config['http_home_url'] . "xfsearch/" . urlencode( $value2 ) . "/\">" . $value2 . "</a>";
 							else $value3[] = "<a href=\"$PHP_SELF?do=xfsearch&amp;xf=" . urlencode( $value2 ) . "\">" . $value2 . "</a>";
 						}
-						
 						$xfieldsdata[$value[0]] = implode(", ", $value3); 
-						
 						unset($temp_array);
 						unset($value2);
 						unset($value3);
 					}			
-					
 					if( empty( $xfieldsdata[$value[0]] ) ) {
 						$tplb->copy_template = preg_replace( "'\\[xfgiven_{$preg_safe_name}\\](.*?)\\[/xfgiven_{$preg_safe_name}\\]'is", "", $tplb->copy_template );
 						$tplb->copy_template = str_replace( "[xfnotgiven_{$preg_safe_name}]", "", $tplb->copy_template );
@@ -210,15 +263,12 @@ if( !$blockpro ) {
 						$tplb->copy_template = preg_replace( "'\\[xfnotgiven_{$preg_safe_name}\\](.*?)\\[/xfnotgiven_{$preg_safe_name}\\]'is", "", $tplb->copy_template );
 						$tplb->copy_template = str_replace( "[xfgiven_{$preg_safe_name}]", "", $tplb->copy_template );
 						$tplb->copy_template = str_replace( "[/xfgiven_{$preg_safe_name}]", "", $tplb->copy_template );
-					}						
+					}
+					
 					// выдергиваем картинку из доп. поля, если оно задано параметрами
 					if ($preg_safe_name == $img_xfield) {
-					
-						require_once ENGINE_DIR . '/classes/thumb.class.php';
-					
 						$info = pathinfo($xfieldsdata[$value[0]]);
 						if (isset($info['extension'])) {
-						
 							$info['extension'] = strtolower($info['extension']);
 							// это точно картинка?
 							if(in_array($info['extension'],array('jpg','jpeg','gif','png'))) {								
@@ -227,12 +277,12 @@ if( !$blockpro ) {
 								$file_name = $img_size."_".$file_name;
 								// если картинки нету, делаем её
 								if (!file_exists($dir.$file_name)) {
+									require_once ENGINE_DIR . '/classes/thumb.class.php';
 									$thumb = new thumbnail($xfieldsdata[$value[0]]);
 									$thumb->size_auto($img_size);
 									$thumb->save($dir.$file_name); 
-								}								
+								}
 								$tplb->copy_template = str_replace( "[xfvalue_{$img_xfield}]", $config['http_home_url']."uploads/blockpro/".$file_name, $tplb->copy_template );
-								
 							} else {
 								// обмануть решил? получи $noimage, если я не знаю твой формат
 								$tplb->copy_template = str_replace( "[xfvalue_{$img_xfield}]", "/templates/".$config['skin']."/images/".$noimage."", $tplb->copy_template );
@@ -252,7 +302,6 @@ if( !$blockpro ) {
 				preg_match_all('/(img|src)=("|\')[^"\'>]+/i', $rowb['short_story'], $media);
 				unset($data);
 				$data=preg_replace('/(img|src)("|\'|="|=\')(.*)/i',"$3",$media[0]);
-				require_once ENGINE_DIR . '/classes/thumb.class.php';
 				$image = array();
 				
 				// бывает же такое, спарсили что-то, обрабатываем спаршенное и собираем опять
@@ -265,19 +314,24 @@ if( !$blockpro ) {
 					$url = ROOT_DIR . '/uploads/' . $url[1];				
 					if(!is_file($url))  continue;*/
 					
+					// Так то дешевле будет ))) вдруг другой домен?
+					//if(stripos($url, $config['http_home_url'].'uploads/')===false) continue;
+					
 					$info = pathinfo($url);				
-					if (isset($info['extension'])) {					
+					if (isset($info['extension'])) {
 						$info['extension'] = strtolower($info['extension']);
-						if(in_array($info['extension'],array('jpg','jpeg','gif','png'))) {								
-							$original_img = str_replace(ROOT_DIR, '', $url);							
+						if(in_array($info['extension'],array('jpg','jpeg','gif','png'))) {
+							$original_img = str_replace(ROOT_DIR, '', $url);
 							$file_name = strtolower ( basename ( $url ));
 							$file_name = $img_size."_".$file_name;
-							if (!file_exists($dir.$file_name)) {					
+							if (!file_exists($dir.$file_name)) {
+								require_once ENGINE_DIR . '/classes/thumb.class.php';
 								$thumb = new thumbnail($url);
 								$thumb->size_auto($img_size);	
 								$thumb->save($dir.$file_name); 
-							}							
-							if($img_size == 0) {
+							}
+							//if($img_size == 0) {
+							if (!file_exists($dir.$file_name)) {
 								$image[] = $original_img;
 							} else {
 								$image[] = $config['http_home_url']."uploads/blockpro/".$file_name;
@@ -288,7 +342,7 @@ if( !$blockpro ) {
 				
 				if ( count($image) ) {
 					$i=0;
-					foreach($image as $url) {					
+					foreach($image as $url) {
 						$i++;
 						$tplb->copy_template = str_replace( '{image-'.$i.'}', $url, $tplb->copy_template );
 					}
@@ -314,14 +368,11 @@ if( !$blockpro ) {
 			
 			//Показ рейтинга
 			if( $rowb['allow_rate'] ) {
-			
 				if( $config['short_rating'] and $user_group[$member_id['user_group']]['allow_rating'] ) $tplb->set( '{rating}', ShortRating( $rowb['id'], $rowb['rating'], $rowb['vote_num'], 1 ) );
 				else $tplb->set( '{rating}', ShortRating( $rowb['id'], $rowb['rating'], $rowb['vote_num'], 0 ) );
-
 				$tplb->set( '{vote-num}', $rowb['vote_num'] );
 				$tplb->set( '[rating]', "" );
 				$tplb->set( '[/rating]', "" );
-			
 			} else {
 				$tplb->set( '{rating}', "" );
 				$tplb->set( '{vote-num}', "" );
@@ -363,34 +414,34 @@ if( !$blockpro ) {
 				$rowb['short_story'] = str_ireplace( array("[hide]","[/hide]"), "", $rowb['short_story']);
 			else 
 				$rowb['short_story'] = preg_replace ( "#\[hide\](.+?)\[/hide\]#ims", "<div class=\"quote\">" . $lang['news_regus'] . "</div>", $rowb['short_story'] );
+
 			if ( preg_match( "#\\{text limit=['\"](.+?)['\"]\\}#i", $tplb->copy_template, $matches ) ) {
 				$count= intval($matches[1]);
 				$rowb['short_story'] = strip_tags( $rowb['short_story'], "<br>" );
 				$rowb['short_story'] = trim(str_replace( array("<br>",'<br />'), " ", $rowb['short_story'] ));
 				if( $count>0 AND dle_strlen( $rowb['short_story'], $config['charset'] ) > $count ) {					
 					$rowb['short_story'] = dle_substr( $rowb['short_story'], 0, $count, $config['charset'] ). "&hellip;";					
-					if( !$wordcut && ($word_pos = dle_strrpos( $rowb['short_story'], ' ', $config['charset'] )) ) $rowb['short_story'] = dle_substr( $rowb['short_story'], 0, $word_pos, $config['charset'] ). "&hellip;";
+					if( !$wordcut && ($word_pos = dle_strrpos( $rowb['short_story'], ' ', $config['charset'] )) ) 
+						$rowb['short_story'] = dle_substr( $rowb['short_story'], 0, $word_pos, $config['charset'] ). "&hellip;";
 				}
-
 				$tplb->set( $matches[0], $rowb['short_story'] );
-
-			} else $tplb->set( '{text}', $rowb['short_story'] );
+			} else 
+				$tplb->set( '{text}', $rowb['short_story'] );
 			
 			$tplb->set( '{full-link}', $full_link );
 			$tplb->set ( '{comments-num}', $rowb['comm_num'] );
 			$tplb->set ( '{views}', $rowb['news_read'] );
 
 			if( $allow_userinfo and ! $rowb['approve'] and ($member_id['name'] == $rowb['autor'] and ! $user_group[$member_id['user_group']]['allow_all_edit']) ) {
-			$tplb->set( '[edit]', "<a href=\"" . $config['http_home_url'] . "index.php?do=addnews&id=" . $rowb['id'] . "\" >" );
-			$tplb->set( '[/edit]', "</a>" );
-		} elseif( $is_logged and (($member_id['name'] == $rowb['autor'] and $user_group[$member_id['user_group']]['allow_edit']) or $user_group[$member_id['user_group']]['allow_all_edit']) ) {
-			
-			$_SESSION['referrer'] = $_SERVER['REQUEST_URI'];
-			$tplb->set( '[edit]', "<a onclick=\"return dropdownmenu(this, event, MenuNewsBuild('" . $rowb['id'] . "', 'short'), '170px')\" href=\"#\">" );
-			$tplb->set( '[/edit]', "</a>" );
-			$allow_comments_ajax = true;
-		} else
-			$tplb->set_block( "'\\[edit\\](.*?)\\[/edit\\]'si", "" );
+				$tplb->set( '[edit]', "<a href=\"" . $config['http_home_url'] . "index.php?do=addnews&id=" . $rowb['id'] . "\" >" );
+				$tplb->set( '[/edit]', "</a>" );
+			} elseif( $is_logged and (($member_id['name'] == $rowb['autor'] and $user_group[$member_id['user_group']]['allow_edit']) or $user_group[$member_id['user_group']]['allow_all_edit']) ) {
+				$_SESSION['referrer'] = $_SERVER['REQUEST_URI'];
+				$tplb->set( '[edit]', "<a onclick=\"return dropdownmenu(this, event, MenuNewsBuild('" . $rowb['id'] . "', 'short'), '170px')\" href=\"#\">" );
+				$tplb->set( '[/edit]', "</a>" );
+				$allow_comments_ajax = true;
+			} else
+				$tplb->set_block( "'\\[edit\\](.*?)\\[/edit\\]'si", "" );
 			/* конец кучки тегов  */
 			
 			$tplb->compile ( 'blockpro' ); 
@@ -399,14 +450,15 @@ if( !$blockpro ) {
 	} else {
 		$blockpro = 'Извини дружище, но без шаблона я не умею работать, советую в строке подключения указать: <strong style="color: red;">&template=blockpro</strong> <br />Только не забудь почистить кеш DLE!';
 	}
-		unset($tplb);
+		//unset($tplb);
 		$db->free();
 		create_cache("news_bp_".$block_id, $blockpro, $config['skin'] );
 }
 
-if(!$relatedpro && !$blockpro) $blockpro = '<div class="blockpro">Где то косяк! Проверь правильность строки подключения. Возможно просто нет новостей за последние 30 дней.</div>';
+	if(!$relatedpro && !$blockpro) 
+		$blockpro = '<div class="blockpro">Где то косяк! Проверь правильность строки подключения. Возможно просто нет новостей за последние 30 дней.</div>';
 
-if($relatedpro){
+	if($relatedpro){
 		if($blockpro){
 			$tpl->set( '[related-news]', "" );
 			$tpl->set( '[/related-news]', "" );
@@ -414,8 +466,9 @@ if($relatedpro){
 			$tpl->set_block( "'\\[related-news\\](.*?)\\[/related-news\\]'si", "" );
 		}
 		$tpl->set( '{related-news}', $blockpro );
-	}
-if(!$relatedpro) echo $blockpro;	
+	} else
+		echo $blockpro;	
+		
 unset($blockpro);
 
 //показываем админу время выполнения скрипта (раскомментировать для показа эту строку и в начале ещё одну)
