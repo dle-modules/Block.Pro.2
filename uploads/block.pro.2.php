@@ -1,23 +1,23 @@
 <?php
 /*=====================================================
-BlockPro 2 - ������ ��� ������ ������ � ��������� �� ��������� ����� DLE (������������ �� 9.5)
+BlockPro 2 - Модуль для вывода блоков с новостями на страницах сайта DLE (тестировался на 9.5)
 =====================================================
-�����: �������� 
+Автор: ПафНутиЙ 
 URL: http://pafnuty.name/
 ICQ: 817233 
 email: p13mm@yandex.ru
 =====================================================
-����:  block.pro.2.php
+Файл:  block.pro.2.php
 ------------------------------------------------------
-������: 2.6 (11.05.2012)
+Версия: 2.6 (11.05.2012)
 =====================================================*/
 
-if(!defined('DATALIFEENGINE')){die("������� ����, ���� ����������!!!");}
+if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
 
-//���������� ������ ����� ���������� ������� (����������������� ��� ������ ��� ������ � � ����� �� ����)
+//показываем админу время выполнения скрипта (раскомментировать для показа эту строку и в конце ещё одну)
 //if($member_id['user_id'] == 1) $start = microtime(true);
 
-/*************������ �� ����� ������ ������� ���� �� ������, ��� ������ *****************/
+/*************Дальше не нужно ничего трогать если не знаете, что делать *****************/
 if(!is_numeric($day)) 			$day = 30; 					
 if(!is_string($show_cat)) 		$show_cat = ""; 			
 if(!is_string($ignore_cat)) 	$ignore_cat = ""; 					
@@ -35,7 +35,7 @@ $author = @$db->safesql ( strip_tags ( str_replace ( '/', '', $author ) ) );
 $xfilter = @$db->safesql ( strip_tags ( str_replace ( '/', '', $xfilter ) ) );
 
 
-if(floatval($config['version_id'])>=9.6) $new_version = 1; //�������� ������ DLE.
+if(floatval($config['version_id'])>=9.6) $new_version = 1; //контроль версий DLE.
 			
 
 if($nocache) {
@@ -64,7 +64,7 @@ if( !$blockpro ) {
 	if($relatedpro) {
 		if($new_version) {
 		//////////////////////////////
-		//��� ����� ��� ��� DLE 9.6+//
+		//тут будет код для DLE 9.6+//
 		//////////////////////////////
 		}
 		else {
@@ -94,26 +94,26 @@ if( !$blockpro ) {
 		if ($day && $day !== 0 && !$last && !$relatedpro && !$random) $query_mod .= "AND p.date >= '$tooday' - INTERVAL {$day} DAY"; 
 		$query_mod .= " AND p.date < '$tooday' "; 
 
-		$sort_var = "rating DESC, comm_num DESC, news_read DESC"; //�� ��������� ������� ��� ������� ���
-		if ($random) $sort_var = "RAND()"; // ��������� �����
-		if ($last) $sort_var = "date DESC"; // �� ����
-		if ($top_comm) $sort_var = "comm_num DESC"; // �� ������������
-		if ($top_rating) $sort_var = "rating DESC"; // �� ��������
-		if ($top_views) $sort_var = "news_read DESC"; // �� ����������
+		$sort_var = "rating DESC, comm_num DESC, news_read DESC"; //По умолчанию выводим как обычный топ
+		if ($random) $sort_var = "RAND()"; // Рандомный вывод
+		if ($last) $sort_var = "date DESC"; // По дате
+		if ($top_comm) $sort_var = "comm_num DESC"; // По комментариям
+		if ($top_rating) $sort_var = "rating DESC"; // По рейтингу
+		if ($top_views) $sort_var = "news_read DESC"; // По просмотрам
 		
 		if($author) $query_mod .= "AND autor='{$author}'";
 		
 		
 		if($new_version) {
-			//������ ��� ������ 9.6+
+			//Запрсы для версии 9.6+
 			if($relatedpro) {
-				$tb = $db->query(/*��� ��� ������ - ��*/);
+				$tb = $db->query(/*что тут писать - хз*/);
 			} else {			
 				$tb = $db->query("SELECT p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.comm_num, e.news_read, e.allow_rate, e.rating, e.vote_num, e.votes FROM " . PREFIX . "_post p LEFT JOIN " . PREFIX . "_post_extras e ON (p.id=e.news_id) WHERE p.approve=1 {$query_mod} ORDER BY {$sort_var} LIMIT ".$start_from.",".$news_num); 
 			}		
 		}
 		else {
-			//������� ��� ������ <9.6
+			//Запросы для версий <9.6
 			if($relatedpro) {
 				$tb = $db->query("SELECT id, category, title, news_read, short_story, full_story, autor, xfields, comm_num, date, flag, alt_name, allow_rate, rating, vote_num FROM ".PREFIX."_post WHERE MATCH (title, short_story, full_story, xfields) AGAINST ('$body') AND id != " . $row['id'] . " AND approve=1 {$query_mod} LIMIT ".$start_from.",".$news_num);
 			} else {
@@ -127,7 +127,7 @@ if( !$blockpro ) {
 			$rowb['date'] = strtotime( $rowb['date'] );
 			$rowb['short_story'] = stripslashes($rowb['short_story']);
 			
-			// ������ �� ���������
+			// ссылки на категории
 			$my_cat = array ();
 			$my_cat_icon = array ();
 			$my_cat_link = array ();
@@ -147,7 +147,7 @@ if( !$blockpro ) {
 					else $my_cat_link[] = "<a href=\"$PHP_SELF?do=cat&category={$cat_info[$element]['alt_name']}\">{$cat_info[$element]['name']}</a>";
 				}
 			}
-			// ����� �������
+			// конец ссылкам
 			
 			$tplb->set ( '{link-category}', implode( ', ', $my_cat_link ) );
 			$tplb->set ( '{category}', implode( ', ', $my_cat ) );
@@ -157,8 +157,8 @@ if( !$blockpro ) {
 			else
 				$tplb->set( '{category-url}', "#" );
 			
-			// �������� �� ��� �������
-			$rowb['category'] = intval( $rowb['category'] ); // �� ���� ���������, ���� ������
+			// ссылочка на всю новость
+			$rowb['category'] = intval( $rowb['category'] ); // из всех категорий, берём первую
 			
 			
 			if( $config['allow_alt_url'] == "yes" ) {
@@ -175,9 +175,9 @@ if( !$blockpro ) {
 				$full_link = $config['http_home_url'] . "index.php?newsid=" . $rowb['id'];
 			}
 				
-			// ����� �������
+			// конец ссылкам
 
-			// �������� � ���. �����
+			// работаем с доп. полям
 			if( strpos( $tplb->copy_template, "[xfvalue_" ) !== false OR strpos( $tplb->copy_template, "[xfgiven_" ) !== false ) {
 			
 				$xfieldsdata = xfieldsdataload( $rowb['xfields'] );
@@ -211,7 +211,7 @@ if( !$blockpro ) {
 						$tplb->copy_template = str_replace( "[xfgiven_{$preg_safe_name}]", "", $tplb->copy_template );
 						$tplb->copy_template = str_replace( "[/xfgiven_{$preg_safe_name}]", "", $tplb->copy_template );
 					}						
-					// ����������� �������� �� ���. ����, ���� ��� ������ �����������
+					// выдергиваем картинку из доп. поля, если оно задано параметрами
 					if ($preg_safe_name == $img_xfield) {
 					
 						require_once ENGINE_DIR . '/classes/thumb.class.php';
@@ -220,12 +220,12 @@ if( !$blockpro ) {
 						if (isset($info['extension'])) {
 						
 							$info['extension'] = strtolower($info['extension']);
-							// ��� ����� ��������?
+							// это точно картинка?
 							if(in_array($info['extension'],array('jpg','jpeg','gif','png'))) {								
 								$file_name = strtolower ( basename ($xfieldsdata[$value[0]]));
 								$original_img = $xfieldsdata[$value[0]];
 								$file_name = $img_size."_".$file_name;
-								// ���� �������� ����, ������ �
+								// если картинки нету, делаем её
 								if (!file_exists($dir.$file_name)) {
 									$thumb = new thumbnail($xfieldsdata[$value[0]]);
 									$thumb->size_auto($img_size);
@@ -234,34 +234,34 @@ if( !$blockpro ) {
 								$tplb->copy_template = str_replace( "[xfvalue_{$img_xfield}]", $config['http_home_url']."uploads/blockpro/".$file_name, $tplb->copy_template );
 								
 							} else {
-								// �������� �����? ������ $noimage, ���� � �� ���� ���� ������
+								// обмануть решил? получи $noimage, если я не знаю твой формат
 								$tplb->copy_template = str_replace( "[xfvalue_{$img_xfield}]", "/templates/".$config['skin']."/images/".$noimage."", $tplb->copy_template );
 							}
 						}
 					}
-					// ����� ���������
+					// конец картинкам
 					$tplb->copy_template = str_replace( "[xfvalue_{$preg_safe_name}]", stripslashes( $xfieldsdata[$value[0]] ), $tplb->copy_template );
 				}
 			}
-			// ����� ��������
+			// конец допполей
 			
-			// �� ����� ������, �������� �������? ����� ��������, ���� ������ �� �� ������� �������� �� ��� ����.
+			// ух какой хитрый, картинки захотел? будем работать, если только ты не захотел картинку из доп поля.
 			if (stripos ( $tplb->copy_template, "{image-" ) !== false && !$img_xfield) {
 				
-				// ������ ������� �� ����_�����			
+				// парсим адресат из шорт_стори			
 				preg_match_all('/(img|src)=("|\')[^"\'>]+/i', $rowb['short_story'], $media);
 				unset($data);
 				$data=preg_replace('/(img|src)("|\'|="|=\')(.*)/i',"$3",$media[0]);
 				require_once ENGINE_DIR . '/classes/thumb.class.php';
 				$image = array();
 				
-				// ������ �� �����, �������� ���-��, ������������ ���������� � �������� �����
+				// бывает же такое, спарсили что-то, обрабатываем спаршенное и собираем опять
 				foreach($data as $url) {
-					// �� ������, ��������, ����� �������� ���� ������ � ����� uploads, ��� �����!.
+					// во первых, проверка, чтобы картинка была только в папке uploads, ибо нефик!.
 					
-					//������� ��������������� �.�. �� ������� �������� �� ���������, ����� ��������� �� ��������.
+					//Покачто закомментировал т.к. на локалке работает всё нормально, нужно проверять на хостинге.
 					/*$url = explode('/uploads/', $url);
-					if(count($url) != 2) continue; // �� �� �����, ���� � ���������� ������ uploads					
+					if(count($url) != 2) continue; // да ну нафиг, если в нескольких папках uploads					
 					$url = ROOT_DIR . '/uploads/' . $url[1];				
 					if(!is_file($url))  continue;*/
 					
@@ -293,11 +293,11 @@ if( !$blockpro ) {
 						$tplb->copy_template = str_replace( '{image-'.$i.'}', $url, $tplb->copy_template );
 					}
 				}
-				// ��� ���� ������������ ����� {image-x} ��������� ��������
+				// для всех незаполненых тегов {image-x} вставляем заглушку
 				$tplb->copy_template = preg_replace( "#\\{image-([0-9]{1,})\\}#i", "/templates/".$config['skin']."/images/".$noimage."", $tplb->copy_template );
 			
 			}
-			//����� ������������ �������� ���� � ������� ���� ��� {image_original}
+			//показ оригинальной картинки если в шаблоне есть тег {image_original}
 			if ($original_img == "") {
 				$tplb->set( '{image_original}', "");
 				$tplb->copy_template = preg_replace( "'\\[image_original\\](.*?)\\[/image_original\\]'is", "", $tplb->copy_template );
@@ -310,9 +310,9 @@ if( !$blockpro ) {
 				$tplb->copy_template = str_replace( "[/image_original]", "", $tplb->copy_template );
 			}
 			unset($original_img);
-			//����� ������ ������������ ��������
+			//конец показа оригинальной картинки
 			
-			//����� ��������
+			//Показ рейтинга
 			if( $rowb['allow_rate'] ) {
 			
 				if( $config['short_rating'] and $user_group[$member_id['user_group']]['allow_rating'] ) $tplb->set( '{rating}', ShortRating( $rowb['id'], $rowb['rating'], $rowb['vote_num'], 1 ) );
@@ -327,9 +327,9 @@ if( !$blockpro ) {
 				$tplb->set( '{vote-num}', "" );
 				$tplb->set_block( "'\\[rating\\](.*?)\\[/rating\\]'si", "" );
 			}
-			//����� ������ ��������
+			//Конец показа рейтинга
 			
-			/* ���������, ���� �����.. */
+			/* понеслась, куча тегов.. */
 			if( $config['allow_alt_url'] == "yes" ) $go_page = $config['http_home_url'] . "user/" . urlencode( $rowb['autor'] ) . "/"; 
 			else $go_page = "$PHP_SELF?subaction=userinfo&amp;user=" . urlencode( $rowb['autor'] );
 			
@@ -346,7 +346,7 @@ if( !$blockpro ) {
 			} else {
 				$tplb->set( '{date}', langdate( $config['timestamp_active'], $rowb['date'] ) );
 			}
-			// ���� ������� ������� ������...
+			// дата разного формата бывает...
 			$tplb->copy_template = preg_replace ( "#\{date=(.+?)\}#ie", "langdate('\\1', '{$rowb['date']}')", $tplb->copy_template );
 			
 			$title = htmlspecialchars( strip_tags( stripslashes( $rowb['title'] ) ) );
@@ -391,20 +391,20 @@ if( !$blockpro ) {
 			$allow_comments_ajax = true;
 		} else
 			$tplb->set_block( "'\\[edit\\](.*?)\\[/edit\\]'si", "" );
-			/* ����� ����� �����  */
+			/* конец кучки тегов  */
 			
 			$tplb->compile ( 'blockpro' ); 
 		}
 			$blockpro = $tplb->result['blockpro'];
 	} else {
-		$blockpro = '������ �������, �� ��� ������� � �� ���� ��������, ������� � ������ ����������� �������: <strong style="color: red;">&template=blockpro</strong> <br />������ �� ������ ��������� ��� DLE!';
+		$blockpro = 'Извини дружище, но без шаблона я не умею работать, советую в строке подключения указать: <strong style="color: red;">&template=blockpro</strong> <br />Только не забудь почистить кеш DLE!';
 	}
 		unset($tplb);
 		$db->free();
 		create_cache("news_bp_".$block_id, $blockpro, $config['skin'] );
 }
 
-if(!$relatedpro && !$blockpro) $blockpro = '<div class="blockpro">��� �� �����! ������� ������������ ������ �����������. �������� ������ ��� �������� �� ��������� 30 ����.</div>';
+if(!$relatedpro && !$blockpro) $blockpro = '<div class="blockpro">Где то косяк! Проверь правильность строки подключения. Возможно просто нет новостей за последние 30 дней.</div>';
 
 if($relatedpro){
 		if($blockpro){
@@ -418,6 +418,6 @@ if($relatedpro){
 if(!$relatedpro) echo $blockpro;	
 unset($blockpro);
 
-//���������� ������ ����� ���������� ������� (����������������� ��� ������ ��� ������ � � ������ �� ����)
-//if($member_id['user_id'] = 1)echo "����� ���������� Block.Pro: <b>". round((microtime(true) - $start), 6). "</b> ���";
+//показываем админу время выполнения скрипта (раскомментировать для показа эту строку и в начале ещё одну)
+//if($member_id['user_id'] = 1)echo "Время выполнения Block.Pro: <b>". round((microtime(true) - $start), 6). "</b> сек";
 ?>
