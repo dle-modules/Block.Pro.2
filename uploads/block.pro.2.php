@@ -80,12 +80,12 @@ if( !$blockpro ) {
 		if($xfilter) $query_mod .= "AND p.xfields regexp '[[:<:]](".$xfilter.")[[:>:]]'";
 		
 		$p_date = $new_version?"p.date":"date";
-		if ($day && $day !== 0 && !$last && !$relatedpro && !$random) $query_mod .= "AND '$p_date' >= '$tooday' - INTERVAL {$day} DAY"; 
-		$query_mod .= " AND '$p_date' < '$tooday' "; 
+		if ($day && $day !== 0 && !$last && !$relatedpro && !$random) $query_mod .= "AND {$p_date} >= '$tooday' - INTERVAL {$day} DAY"; 
+		$query_mod .= " AND {$p_date} < '$tooday' "; 
 
 		$sort_var = "rating DESC, comm_num DESC, news_read DESC"; //По умолчанию выводим как обычный топ
 		if ($random) $sort_var = "RAND()"; // Рандомный вывод
-		if ($last) $sort_var = "'$p_date' DESC"; // По дате
+		if ($last) $sort_var = "{$p_date} DESC"; // По дате
 		if ($top_comm) $sort_var = "comm_num DESC"; // По комментариям
 		if ($top_rating) $sort_var = "rating DESC"; // По рейтингу
 		if ($top_views) $sort_var = "news_read DESC"; // По просмотрам
