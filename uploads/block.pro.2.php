@@ -30,7 +30,7 @@ if(!is_string($template))		$template = "";
 if(!is_string($author))			$author = "";
 if(!is_string($xfilter))		$xfilter = "";
 
-$img_size = intval($chk_img_size[0]).((count($chk_img_size)>=2)?'x'.intval($chk_img_size[1]):''); // Мало ли идиотов
+//$img_size = intval($chk_img_size[0]).((count($chk_img_size)>=2)?'x'.intval($chk_img_size[1]):''); // Мало ли идиотов
 $author = @$db->safesql ( strip_tags ( str_replace ( '/', '', $author ) ) );
 $xfilter = @$db->safesql ( strip_tags ( str_replace ( '/', '', $xfilter ) ) );
 
