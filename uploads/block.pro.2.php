@@ -14,8 +14,10 @@ email: p13mm@yandex.ru
 
 if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
 
-//показываем админу время выполнения скрипта (раскомментировать для показа эту строку и в конце ещё одну)
-//if($member_id['user_id'] == 1) $start = microtime(true);
+//показываем админу время выполнения скрипта если требуется.
+if($showstat && $member_id['user_id'] == 1) {
+	$start = microtime(true);
+}
 
 /*************Дальше не нужно ничего трогать если не знаете, что делать *****************/
 if(!is_numeric($day)) 			$day = 30; 					
@@ -48,24 +50,26 @@ if($author) $block_id .= "_author_".$author;
 
 $blockpro = dle_cache("news_bp_".$block_id, $config['skin']);
 
-if( !$blockpro ) {
+if( !$blockpro ) 
+	{
 
 	$dir = ROOT_DIR . '/uploads/blockpro/';
 	if(!is_dir($dir)){	
-		@mkdir($dir, 0777);
-		@chmod($dir, 0777);
+		@mkdir($dir, 0755);
+		@chmod($dir, 0755);
 	} 
-	if(!chmod($dir, 0777)) {
-		@chmod($dir, 0777);
+	if(!chmod($dir, 0755)) {
+		@chmod($dir, 0755);
 	}
 	
-	if($template){	
+	if($template && file_exists(TEMPLATE_DIR.'/'.$template.'.tpl'))
+		{	
 		
-		global $tplb;
-		if(!isset($tplb)) {
+		//global $tplb;
+		//if(!isset($tplb)) {
 			$tplb = new dle_template();
 			$tplb->dir = TEMPLATE_DIR;
-		}
+		//}
 				
 		$tplb->load_template ( $template.'.tpl' );
 		
@@ -257,7 +261,7 @@ if( !$blockpro ) {
 					if (isset($info['extension'])) {
 						$info['extension'] = strtolower($info['extension']);
 						if(in_array($info['extension'],array('jpg','jpeg','gif','png'))) {
-							$original_img = str_replace(ROOT_DIR, '', $url);
+							$original_img = $url;
 							$file_name = strtolower ( basename ( $url ));
 							$file_name = $img_size."_".$file_name;
 							if (!file_exists($dir.$file_name)) {
@@ -383,16 +387,17 @@ if( !$blockpro ) {
 			$tplb->compile ( 'blockpro' ); 
 		}
 			$blockpro = $tplb->result['blockpro'];
+			
 	} else {
-		$blockpro = 'Извини дружище, но без шаблона я не умею работать, советую в строке подключения указать: <strong style="color: red;">&template=blockpro</strong> <br />Только не забудь почистить кеш DLE!';
-	}
-		//unset($tplb);
+		$blockpro = '<strong style="color: red;">Указанный шаблон не сущестует</strong> ';
+	} 
+		unset($tplb);
 		$db->free();
 		create_cache("news_bp_".$block_id, $blockpro, $config['skin'] );
 }
 
 	if(!$relatedpro && !$blockpro) 
-		$blockpro = '<div class="blockpro">Где то косяк! Проверь правильность строки подключения. Возможно просто нет новостей за последние 30 дней.</div>';
+		$blockpro = '<strong style="color: red;">По заданным критериям материалов не обнаружено.</strong>';
 
 	if($relatedpro){
 		if($blockpro){
@@ -407,6 +412,9 @@ if( !$blockpro ) {
 		
 unset($blockpro);
 
-//показываем админу время выполнения скрипта (раскомментировать для показа эту строку и в начале ещё одну)
-//if($member_id['user_id'] = 1)echo "Время выполнения Block.Pro: <b>". round((microtime(true) - $start), 6). "</b> сек";
+//показываем админу время выполнения скрипта если требуется
+
+if($showstat && $member_id['user_id'] == 1) {
+	echo "Время выполнения Block.Pro: <b>". round((microtime(true) - $start), 6). "</b> сек";
+}
 ?>
