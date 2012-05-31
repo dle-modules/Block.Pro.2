@@ -65,11 +65,13 @@ if( !$blockpro )
 	if($template && file_exists(TEMPLATE_DIR.'/'.$template.'.tpl'))
 		{	
 		
-		//global $tplb;
-		//if(!isset($tplb)) {
+		global $tplb;
+		if(!isset($tplb)) {
 			$tplb = new dle_template();
 			$tplb->dir = TEMPLATE_DIR;
-		//}
+		} else {
+			$tplb->result['blockpro']='';		
+		}
 				
 		$tplb->load_template ( $template.'.tpl' );
 		
