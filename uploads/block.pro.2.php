@@ -78,10 +78,12 @@ if( !$blockpro )
 		$tooday = date ('Y-m-d H:i:s', $_TIME); 
 		
 		$query_mod = "";
-		$ignore_category = $ignore_cat?"NOT":"";
+		$ignore_category = $ignore_cat?"NOT":"";		
+		$p_category = $new_version?"p.category":"category";
 		
-		if ($show_cat && $show_cat !="this") $query_mod .= "AND {$ignore_category} p.category regexp '[[:<:]](".str_replace(',', '|', $show_cat).")[[:>:]]'"; 
-		if ($show_cat == "this" && $category_id !="") $query_mod .= "AND {$ignore_category} p.category IN (".intval($category_id).")";
+		if ($show_cat && $show_cat !="this") $query_mod .= "AND {$ignore_category} {$p_category} regexp '[[:<:]](".str_replace(',', '|', $show_cat).")[[:>:]]'"; 
+		
+		if ($show_cat == "this" && $category_id !="") $query_mod .= "AND {$ignore_category} {$p_category} IN (".intval($category_id).")";
 		
 		if($xfilter) $query_mod .= "AND p.xfields regexp '[[:<:]](".$xfilter.")[[:>:]]'";
 		
@@ -249,15 +251,13 @@ if( !$blockpro )
 				// бывает же такое, спарсили что-то, обрабатываем спаршенное и собираем опять
 				foreach($data as $url) {
 					// во первых, проверка, чтобы картинка была только в папке uploads, ибо нефик!.
-					
-					//Покачто закомментировал т.к. на локалке работает всё нормально, нужно проверять на хостинге.
-					/*$url = explode('/uploads/', $url);
+					$url = explode('/uploads/', $url);
 					if(count($url) != 2) continue; // да ну нафиг, если в нескольких папках uploads					
 					$url = ROOT_DIR . '/uploads/' . $url[1];				
-					if(!is_file($url))  continue;*/
+					if(!is_file($url))  continue;
 					
 					// Так то дешевле будет ))) вдруг другой домен?
-					//if(stripos($url, $config['http_home_url'].'uploads/')===false) continue;
+					if(stripos($url, $config['http_home_url'].'uploads/')===false) continue;
 					
 					$info = pathinfo($url);				
 					if (isset($info['extension'])) {
