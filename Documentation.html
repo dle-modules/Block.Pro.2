@@ -32,6 +32,7 @@
 	li{margin:0 0 10px;}
 	pre{padding:10px;background:#fffff0;}
 	.last{padding-bottom:50px;}
+	.new {color:#FF0000}
 </style>
 </head>
 
@@ -42,8 +43,8 @@
 	<p><strong>Block.Pro.2 - Расширенный вывод блоков с новостями для DLE</strong></p> 
 	<p>Модуль для удобного и гибкого вывода новостей а любой странице DLE-сайта</p>
 	<p><span class="ib">Версия DLE:</span> <b>9.5</b>+ <i>(на более старых версиях не проверялся, но работать должен)</i></p>  
-	<p><span class="ib">Версия модуля:</span> <b>2.6.1</b></p>
-	<p><span class="ib">Дата релиза:</span> <b>31.05.2012</b></p>	
+	<p><span class="ib">Версия модуля:</span> <b>2.6.2</b></p>
+	<p><span class="ib">Дата релиза:</span> <b>14.06.2012</b></p>	
 	<p><span class="ib">Автор:</span> <b>ПафНутиЙ</b></p>
 	<p><span class="ib">Контакты:</span> <b><a href="http://pafnuty.name" title="ПафНутиЙ-Блог" target="_blank">http://pafnuty.name</a>, <a href="http://gplus.to/pafnuty" title="Google+" target="_blank">Google+</a> или <a href="mailto:pafnuty10@gmail.com">email</a></b> </p>  
 	<h3>Модуль распространяется бесплатно для частного и коммерческого использования</h3> 
@@ -69,6 +70,7 @@
 		<li>Возможность быстрого редактирования новостей прямо из блока, аналогично стандартному функционалу.</li>
 		<li>Фильтрация новостей по имени автора.</li>
 		<li>Фильтрация новостей по дополнительным полям (проверяется только заполненность поля).</li>
+		<li><span class="new">new</span> Фильтрация новостей по ID (работает по аналогии с фильтрацией по категориям)</li>
 	</ul> 
 	<h2>Установка модуля</h2>   
 	<ol>
@@ -135,6 +137,20 @@ include_once ENGINE_DIR . '/modules/block.pro.2.php';
     	<td>Для активации модификатора достаточно его определить (например &amp;ignore_cat=y)</td>
   	</tr>
   	<tr>
+  	  <th scope="row">&amp;post_id</th>
+  	  <td>&nbsp;</td>
+  	  <td><span class="new">new</span>&nbsp;Фильтрация новостей по их ID</td>
+  	  <td><p>ID новостей указываются через запятую.</p>
+  	    <p>Если в строке подключения, расположенной в шаблоне fullstory.tpl указать &amp;post_id={news-id}&amp;ignore_post_id=y Будут отбираться все новости, кроме новости из просматриваемой категории. </p>
+  	    <p><span class="new">Важно!</span> &amp;post_id={news-id} - работает только в fullstory.tpl и shortstory.tpl</p></td>
+	  </tr>
+  	<tr>
+  	  <th scope="row">&amp;ignore_post_id</th>
+  	  <td>&nbsp;</td>
+  	  <td><span class="new">new</span>&nbsp;Модификатор переменной &amp;post_id. Превращает ID, указанные в &amp;post_id в игнорируемые.</td>
+  	  <td>Для активации модификатора достаточно его определить (например &amp;ignore_post_id=y). Пример использования указан строкой выше.</td>
+	  </tr>
+  	<tr>
     	<th scope="row">&amp;start_from</th>
     	<td>0</td>
     	<td>Начало диапазона отбора новостей.</td>
@@ -198,8 +214,9 @@ include_once ENGINE_DIR . '/modules/block.pro.2.php';
   	<tr>
   	  <th scope="row">&amp;author</th>
   	  <td>&nbsp;</td>
-  	  <td>Фильтрация новостей по автору</td>
-  	  <td>Указать в строке подключения переменную &amp;author={usertitle} для вывода новостей автора на странице его профиля. Так же {usertitle} можно заменить на имя автора.</td>
+  	  <td>Фильтрация новостей по имени автора</td>
+  	  <td><p>Указать в строке подключения переменную &amp;author={usertitle} для вывода новостей автора на странице его профиля. Так же {usertitle} можно заменить на имя автора.</p>
+  	    <p> <span class="new">Важно!</span> тег {usertitle} будет работать только при вставке строки подключения в шаблон userinfo.tpl</p></td>
 	  </tr>
   	<tr>
   	  <th scope="row">&amp;xfilter</th>
