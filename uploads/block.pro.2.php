@@ -9,7 +9,7 @@ email: p13mm@yandex.ru
 =====================================================
 Файл:  block.pro.2.php
 ------------------------------------------------------
-Версия: 2.6 (31.05.2012)
+Версия: 2.6 (14.06.2012)
 =====================================================*/
 
 if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
@@ -31,10 +31,12 @@ if(!is_string($noimage)) 		$noimage = "noimage.png";
 if(!is_string($template))		$template = "";		
 if(!is_string($author))			$author = "";
 if(!is_string($xfilter))		$xfilter = "";
+if(!is_string($post_id)) 		$post_id = "";
 
 //$img_size = intval($chk_img_size[0]).((count($chk_img_size)>=2)?'x'.intval($chk_img_size[1]):''); // Мало ли идиотов
 $author = @$db->safesql ( strip_tags ( str_replace ( '/', '', $author ) ) );
 $xfilter = @$db->safesql ( strip_tags ( str_replace ( '/', '', $xfilter ) ) );
+$post_id = @$db->safesql ( strip_tags ( str_replace ( '/', '', $post_id ) ) );
 
 if(floatval($config['version_id'])>=9.6) $new_version = 1; //контроль версий DLE.
 
@@ -47,6 +49,8 @@ if($nocache) {
 if($show_cat == "this") $block_id .= "_cat_".$category_id;
 
 if($author) $block_id .= "_author_".$author;
+
+if($post_id) $block_id .= "_post-id_".str_replace(',', '-', $post_id);
 
 $blockpro = dle_cache("news_bp_".$block_id, $config['skin']);
 
@@ -78,14 +82,19 @@ if( !$blockpro )
 		$tooday = date ('Y-m-d H:i:s', $_TIME); 
 		
 		$query_mod = "";
-		$ignore_category = $ignore_cat?"NOT":"";		
-		$p_category = $new_version?"p.category":"category";
 		
+		$ignore_category = $ignore_cat?"NOT":"";		
+		$p_category = $new_version?"p.category":"category";		
 		if ($show_cat && $show_cat !="this") $query_mod .= "AND {$ignore_category} {$p_category} regexp '[[:<:]](".str_replace(',', '|', $show_cat).")[[:>:]]'"; 
 		
 		if ($show_cat == "this" && $category_id !="") $query_mod .= "AND {$ignore_category} {$p_category} IN (".intval($category_id).")";
 		
-		if($xfilter) $query_mod .= "AND p.xfields regexp '[[:<:]](".$xfilter.")[[:>:]]'";
+		$p_xfilter = $new_version?"p.xfields":"xfields";
+		if($xfilter) $query_mod .= "AND {$p_xfilter} regexp '[[:<:]](".$xfilter.")[[:>:]]'";
+		
+		$p_post_id = $new_version?"p.id":"id";
+		$ignore_post = $ignore_post_id?"NOT":"";
+		if($post_id) $query_mod .= "AND {$ignore_post} {$p_post_id} regexp '[[:<:]](".str_replace(',', '|', $post_id).")[[:>:]]'";
 		
 		$p_date = $new_version?"p.date":"date";
 		if ($day && $day !== 0 && !$last && !$relatedpro && !$random) $query_mod .= "AND {$p_date} >= '$tooday' - INTERVAL {$day} DAY"; 
@@ -257,7 +266,9 @@ if( !$blockpro )
 					if(!is_file($url))  continue;
 					
 					// Так то дешевле будет ))) вдруг другой домен?
-					if(stripos($url, $config['http_home_url'].'uploads/')===false) continue;
+					if (!$new_version) {
+						if(stripos($url, $config['http_home_url'].'uploads/')===false) continue;
+					}
 					
 					$info = pathinfo($url);				
 					if (isset($info['extension'])) {
