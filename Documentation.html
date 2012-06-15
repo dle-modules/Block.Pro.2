@@ -43,8 +43,8 @@
 	<p><strong>Block.Pro.2 - Расширенный вывод блоков с новостями для DLE</strong></p> 
 	<p>Модуль для удобного и гибкого вывода новостей а любой странице DLE-сайта</p>
 	<p><span class="ib">Версия DLE:</span> <b>9.5</b>+ <i>(на более старых версиях не проверялся, но работать должен)</i></p>  
-	<p><span class="ib">Версия модуля:</span> <b>2.6.2</b></p>
-	<p><span class="ib">Дата релиза:</span> <b>14.06.2012</b></p>	
+	<p><span class="ib">Версия модуля:</span> <b>2.6.3</b></p>
+	<p><span class="ib">Дата релиза:</span> <b>16.06.2012</b></p>	
 	<p><span class="ib">Автор:</span> <b>ПафНутиЙ</b></p>
 	<p><span class="ib">Контакты:</span> <b><a href="http://pafnuty.name" title="ПафНутиЙ-Блог" target="_blank">http://pafnuty.name</a>, <a href="http://gplus.to/pafnuty" title="Google+" target="_blank">Google+</a> или <a href="mailto:pafnuty10@gmail.com">email</a></b> </p>  
 	<h3>Модуль распространяется бесплатно для частного и коммерческого использования</h3> 
@@ -71,6 +71,7 @@
 		<li>Фильтрация новостей по имени автора.</li>
 		<li>Фильтрация новостей по дополнительным полям (проверяется только заполненность поля).</li>
 		<li><span class="new">new</span> Фильтрация новостей по ID (работает по аналогии с фильтрацией по категориям)</li>
+		<li><span class="new">new</span> Возможность задать &quot;Время жизни&quot; для кеша каждого блока.</li>
 	</ul> 
 	<h2>Установка модуля</h2>   
 	<ol>
@@ -141,8 +142,8 @@ include_once ENGINE_DIR . '/modules/block.pro.2.php';
   	  <td>&nbsp;</td>
   	  <td><span class="new">new</span>&nbsp;Фильтрация новостей по их ID</td>
   	  <td><p>ID новостей указываются через запятую.</p>
-  	    <p>Если в строке подключения, расположенной в шаблоне fullstory.tpl указать &amp;post_id={news-id}&amp;ignore_post_id=y Будут отбираться все новости, кроме новости из просматриваемой категории. </p>
-  	    <p><span class="new">Важно!</span> &amp;post_id={news-id} - работает только в fullstory.tpl и shortstory.tpl</p></td>
+  	    <p>Если в строке подключения указать &amp;post_id=<span class="new">this</span>&amp;ignore_post_id=y Будут отбираться все новости, кроме той новости, в которой находится пользователь. </p>
+  	    <p><s><span class="new">Важно!</span> &amp;post_id={news-id} - работает только в fullstory.tpl и shortstory.tpl</s> <span class="new">Работает в любом месте</span></p></td>
 	  </tr>
   	<tr>
   	  <th scope="row">&amp;ignore_post_id</th>
@@ -188,6 +189,14 @@ include_once ENGINE_DIR . '/modules/block.pro.2.php';
     	<td>Модификатор, отключающий использование кеша для блока.</td>
     	<td>Для активации модификатора достаточно его определить (например &amp;nocache=y)</td>
   	</tr>
+  	<tr>
+  	  <th scope="row">&amp;cache_live</th>
+  	  <td>&nbsp;</td>
+  	  <td><p>Переменная, задающая время жизни кеша блока.</p>
+  	    <p>Указывается в секудах.</p></td>
+  	  <td><p>Например если нужно, чтобы блок обновлялся каждые сутки: &amp;cache_live=86400</p>
+  	    <p>При формировании блока модуль проверяет время жизни кеша блока и если оно превышает или равно указанному в переменной - создаёт новый файл кеша.</p></td>
+	  </tr>
   	<tr>
     	<th scope="row"><p>&nbsp;</p>
       	<p>&amp;random</p>
