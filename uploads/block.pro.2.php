@@ -46,15 +46,28 @@ if($nocache) {
 	$config['allow_cache'] = "yes";
 }
 
+
 if($show_cat == "this") $block_id .= "_cat_".$category_id;
 
 if($author) $block_id .= "_author_".$author;
 
-if($post_id) $block_id .= "_post-id_".str_replace(',', '-', $post_id);
+if($post_id && $post_id == "this") $block_id .= "_post-id_".$_REQUEST["newsid"];
 
-$blockpro = dle_cache("news_bp_".$block_id, $config['skin']);
+if($post_id && $post_id !== "this") $block_id .= "_post-id_".str_replace(',', '-', $post_id);
 
-if( !$blockpro ) 
+if($cache_live) { //Время жизни кеша всекундах	
+	$cache_id = "bp";
+	$filedate = ROOT_DIR . "/engine/cache/".$cache_id."_".$block_id."_".md5($config['skin']).".tmp";
+	$cache_time=time()-filemtime ($filedate);
+	if ($cache_time>=$cache_live) $clear_time_cache = 1;		
+} else {
+	$cache_id = "news_bp";
+}
+
+
+$blockpro = dle_cache($cache_id."_".$block_id, $config['skin']);
+
+if( !$blockpro OR $clear_time_cache) 
 	{
 
 	$dir = ROOT_DIR . '/uploads/blockpro/';
@@ -91,10 +104,11 @@ if( !$blockpro )
 		
 		$p_xfilter = $new_version?"p.xfields":"xfields";
 		if($xfilter) $query_mod .= "AND {$p_xfilter} regexp '[[:<:]](".$xfilter.")[[:>:]]'";
-		
-		$p_post_id = $new_version?"p.id":"id";
-		$ignore_post = $ignore_post_id?"NOT":"";
-		if($post_id) $query_mod .= "AND {$ignore_post} {$p_post_id} regexp '[[:<:]](".str_replace(',', '|', $post_id).")[[:>:]]'";
+			
+		$ignore_post = $ignore_post_id?"NOT":"";		
+		$p_post_id = $new_version?"p.id":"id";		
+		if ($post_id && $post_id !="this") $query_mod .= "AND {$ignore_post} {$p_post_id} regexp '[[:<:]](".str_replace(',', '|', $post_id).")[[:>:]]'";		
+		if ($post_id == "this" && $post_id !="" && $_REQUEST["newsid"]) $query_mod .= "AND {$ignore_post} {$p_post_id} IN (".$_REQUEST["newsid"].")";
 		
 		$p_date = $new_version?"p.date":"date";
 		if ($day && $day !== 0 && !$last && !$relatedpro && !$random) $query_mod .= "AND {$p_date} >= '$tooday' - INTERVAL {$day} DAY"; 
@@ -406,7 +420,7 @@ if( !$blockpro )
 	} 
 		unset($tplb);
 		$db->free();
-		create_cache("news_bp_".$block_id, $blockpro, $config['skin'] );
+		create_cache($cache_id."_".$block_id, $blockpro, $config['skin'] );
 }
 
 	if(!$relatedpro && !$blockpro) 
