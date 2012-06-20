@@ -9,7 +9,7 @@ email: p13mm@yandex.ru
 =====================================================
 Файл:  block.pro.2.php
 ------------------------------------------------------
-Версия: 2.6 (16.06.2012)
+Версия: 2.6 (20.06.2012)
 =====================================================*/
 
 if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
@@ -57,8 +57,9 @@ if($post_id && $post_id !== "this") $block_id .= "_post-id_".str_replace(',', '-
 
 if($cache_live) { //Время жизни кеша всекундах	
 	$cache_id = "bp";
-	$filedate = ROOT_DIR . "/engine/cache/".$cache_id."_".$block_id."_".md5($config['skin']).".tmp";
-	$cache_time=time()-filemtime ($filedate);
+	$filedate = ENGINE_DIR."/cache/".$cache_id."_".$block_id."_".md5($config['skin']).".tmp";
+	if(@file_exists($filedate)) $cache_time=time()-@filemtime ($filedate);
+	else $cache_time = $cache_live;	
 	if ($cache_time>=$cache_live) $clear_time_cache = 1;		
 } else {
 	$cache_id = "news_bp";
