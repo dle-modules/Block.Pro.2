@@ -9,7 +9,7 @@ email: p13mm@yandex.ru
 =====================================================
 Файл:  block.pro.2.php
 ------------------------------------------------------
-Версия: 2.6 (20.06.2012)
+Версия: 2.6 (22.06.2012)
 =====================================================*/
 
 if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
@@ -22,15 +22,15 @@ if($showstat && $member_id['user_id'] == 1) {
 /*************Дальше не нужно ничего трогать если не знаете, что делать *****************/
 if(!is_numeric($day)) 			$day = 30; 					
 if(!is_string($show_cat)) 		$show_cat = ""; 			
-if(!is_string($ignore_cat)) 	$ignore_cat = ""; 					
-if(!is_numeric($start_from)) 	$start_from = 0; 			
+if(!is_string($ignore_cat)) 		$ignore_cat = ""; 					
+if(!is_numeric($start_from)) 		$start_from = 0; 			
 if(!is_numeric($news_num)) 		$news_num = 10; 			
-if(!is_string($img_xfield)) 	$img_xfield = "";			
+if(!is_string($img_xfield)) 		$img_xfield = "";			
 if(!is_string($img_size)) 		$img_size = "60x60";			
 if(!is_string($noimage)) 		$noimage = "noimage.png";			
 if(!is_string($template))		$template = "";		
 if(!is_string($author))			$author = "";
-if(!is_string($xfilter))		$xfilter = "";
+if(!is_string($xfilter))			$xfilter = "";
 if(!is_string($post_id)) 		$post_id = "";
 
 //$img_size = intval($chk_img_size[0]).((count($chk_img_size)>=2)?'x'.intval($chk_img_size[1]):''); // Мало ли идиотов
@@ -49,11 +49,9 @@ if($nocache) {
 
 if($show_cat == "this") $block_id .= "_cat_".$category_id;
 
-if($author) $block_id .= "_author_".$author;
+if($author && $author !== "this") $block_id .= "_author_".$author;
 
 if($post_id && $post_id == "this") $block_id .= "_post-id_".$_REQUEST["newsid"];
-
-if($post_id && $post_id !== "this") $block_id .= "_post-id_".str_replace(',', '-', $post_id);
 
 if($cache_live) { //Время жизни кеша всекундах	
 	$cache_id = "bp";
@@ -399,17 +397,6 @@ if( !$blockpro OR $clear_time_cache)
 			$tplb->set( '{full-link}', $full_link );
 			$tplb->set ( '{comments-num}', $rowb['comm_num'] );
 			$tplb->set ( '{views}', $rowb['news_read'] );
-
-			if( $allow_userinfo and ! $rowb['approve'] and ($member_id['name'] == $rowb['autor'] and ! $user_group[$member_id['user_group']]['allow_all_edit']) ) {
-				$tplb->set( '[edit]', "<a href=\"" . $config['http_home_url'] . "index.php?do=addnews&id=" . $rowb['id'] . "\" >" );
-				$tplb->set( '[/edit]', "</a>" );
-			} elseif( $is_logged and (($member_id['name'] == $rowb['autor'] and $user_group[$member_id['user_group']]['allow_edit']) or $user_group[$member_id['user_group']]['allow_all_edit']) ) {
-				$_SESSION['referrer'] = $_SERVER['REQUEST_URI'];
-				$tplb->set( '[edit]', "<a onclick=\"return dropdownmenu(this, event, MenuNewsBuild('" . $rowb['id'] . "', 'short'), '170px')\" href=\"#\">" );
-				$tplb->set( '[/edit]', "</a>" );
-				$allow_comments_ajax = true;
-			} else
-				$tplb->set_block( "'\\[edit\\](.*?)\\[/edit\\]'si", "" );
 			/* конец кучки тегов  */
 			
 			$tplb->compile ( 'blockpro' ); 
