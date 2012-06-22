@@ -2,7 +2,6 @@
 	{date=d F Y} - <a href="{full-link}" title="{title}">{title limit="33"} | {comments-num}</a> <br />
 	<img src="{image-1}" alt="{title}" />
 	<p>{text limit="50"}</p>
-	<p>[edit]правка[/edit] </p>
 </div>
 
 
