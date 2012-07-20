@@ -9,7 +9,7 @@ email: p13mm@yandex.ru
 =====================================================
 Файл:  block.pro.2.php
 ------------------------------------------------------
-Версия: 2.6 (22.06.2012)
+Версия: 2.6.5 (20.07.2012)
 =====================================================*/
 
 if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
@@ -20,18 +20,18 @@ if($showstat && $member_id['user_id'] == 1) {
 }
 
 /*************Дальше не нужно ничего трогать если не знаете, что делать *****************/
-if(!is_numeric($day)) 			$day = 30; 					
-if(!is_string($show_cat)) 		$show_cat = ""; 			
-if(!is_string($ignore_cat)) 		$ignore_cat = ""; 					
-if(!is_numeric($start_from)) 		$start_from = 0; 			
-if(!is_numeric($news_num)) 		$news_num = 10; 			
-if(!is_string($img_xfield)) 		$img_xfield = "";			
-if(!is_string($img_size)) 		$img_size = "60x60";			
-if(!is_string($noimage)) 		$noimage = "noimage.png";			
-if(!is_string($template))		$template = "";		
-if(!is_string($author))			$author = "";
+if(!is_numeric($day)) 				$day = 30; 
+if(!is_string($show_cat)) 			$show_cat = "";
+if(!is_string($ignore_cat)) 		$ignore_cat = "";
+if(!is_numeric($start_from)) 		$start_from = 0;
+if(!is_numeric($news_num)) 			$news_num = 10;
+if(!is_string($img_xfield)) 		$img_xfield = "";
+if(!is_string($img_size)) 			$img_size = "60x60";
+if(!is_string($noimage)) 			$noimage = "noimage.png";
+if(!is_string($template))			$template = "";		
+if(!is_string($author))				$author = "";
 if(!is_string($xfilter))			$xfilter = "";
-if(!is_string($post_id)) 		$post_id = "";
+if(!is_string($post_id)) 			$post_id = "";
 
 //$img_size = intval($chk_img_size[0]).((count($chk_img_size)>=2)?'x'.intval($chk_img_size[1]):''); // Мало ли идиотов
 $author = @$db->safesql ( strip_tags ( str_replace ( '/', '', $author ) ) );
@@ -50,6 +50,8 @@ if($nocache) {
 if($show_cat == "this") $block_id .= "_cat_".$category_id;
 
 if($author && $author !== "this") $block_id .= "_author_".$author;
+
+if($author && $author == "this") $block_id .= "_author_".$_REQUEST["user"];
 
 if($post_id && $post_id == "this") $block_id .= "_post-id_".$_REQUEST["newsid"];
 
@@ -129,10 +131,10 @@ if( !$blockpro OR $clear_time_cache)
 			if($new_version) {
 				$tb = $db->query("
 					SELECT 
-						p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.comm_num, e.news_read, e.allow_rate, e.rating, e.vote_num, e.votes 
+						p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.allow_comm, p.comm_num, e.news_read, e.allow_rate, e.rating, e.vote_num, e.votes 
 					FROM
 						(SELECT
-							p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.comm_num
+							p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.allow_comm, p.comm_num
 						FROM
 							" . PREFIX . "_post p
 						WHERE 
@@ -140,13 +142,13 @@ if( !$blockpro OR $clear_time_cache)
 						) as p
 						LEFT JOIN " . PREFIX . "_post_extras e ON (p.id=e.news_id) LIMIT ".$start_from.",".$news_num); 
 			} else {
-				$tb = $db->query("SELECT id, category, title, news_read, short_story, full_story, autor, xfields, comm_num, date, flag, alt_name, allow_rate, rating, vote_num FROM ".PREFIX."_post WHERE MATCH (title, short_story, full_story, xfields) AGAINST ('$body') AND id != " . $row['id'] . " AND approve=1 {$query_mod} LIMIT ".$start_from.",".$news_num);
+				$tb = $db->query("SELECT id, category, title, news_read, short_story, full_story, autor, xfields, comm_num, date, flag, alt_name, allow_comm, allow_rate, rating, vote_num FROM ".PREFIX."_post WHERE MATCH (title, short_story, full_story, xfields) AGAINST ('$body') AND id != " . $row['id'] . " AND approve=1 {$query_mod} LIMIT ".$start_from.",".$news_num);
 			}
 		} else {
 			if($new_version) {
-				$tb = $db->query("SELECT p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.comm_num, e.news_read, e.allow_rate, e.rating, e.vote_num, e.votes FROM " . PREFIX . "_post p LEFT JOIN " . PREFIX . "_post_extras e ON (p.id=e.news_id) WHERE p.approve=1 {$query_mod} ORDER BY {$sort_var} LIMIT ".$start_from.",".$news_num); 
+				$tb = $db->query("SELECT p.id, p.autor, p.date, p.short_story, p.xfields, p.title, p.category, p.alt_name, p.allow_comm, p.comm_num, e.news_read, e.allow_rate, e.rating, e.vote_num, e.votes FROM " . PREFIX . "_post p LEFT JOIN " . PREFIX . "_post_extras e ON (p.id=e.news_id) WHERE p.approve=1 {$query_mod} ORDER BY {$sort_var} LIMIT ".$start_from.",".$news_num); 
 			} else {
-				$tb = $db->query("SELECT id, category, title, news_read, short_story, full_story, autor, xfields, comm_num, date, flag, alt_name, allow_rate, rating, vote_num FROM ".PREFIX."_post WHERE approve=1 {$query_mod} ORDER BY {$sort_var} LIMIT ".$start_from.",".$news_num);
+				$tb = $db->query("SELECT id, category, title, news_read, short_story, full_story, autor, xfields, comm_num, date, flag, alt_name, allow_comm, allow_rate, rating, vote_num FROM ".PREFIX."_post WHERE approve=1 {$query_mod} ORDER BY {$sort_var} LIMIT ".$start_from.",".$news_num);
 			}
 		}
 		
@@ -237,7 +239,7 @@ if( !$blockpro OR $clear_time_cache)
 						if (isset($info['extension'])) {
 							$info['extension'] = strtolower($info['extension']);
 							// это точно картинка?
-							if(in_array($info['extension'],array('jpg','jpeg','gif','png')) and file_exists($xfieldsdata[$value[0]])) {
+							if(in_array($info['extension'],array('jpg','jpeg','gif','png')) and file_exists($xfieldsdata[$value[0]])) {								
 								$file_name = strtolower ( basename ($xfieldsdata[$value[0]]));
 								$original_img = $xfieldsdata[$value[0]];
 								$file_name = $img_size."_".$file_name;
@@ -381,7 +383,7 @@ if( !$blockpro OR $clear_time_cache)
 			else 
 				$rowb['short_story'] = preg_replace ( "#\[hide\](.+?)\[/hide\]#ims", "<div class=\"quote\">" . $lang['news_regus'] . "</div>", $rowb['short_story'] );
 
-			if ( preg_match( "#\\{text limit=['\"](.+?)['\"]\\}#i", $tplb->copy_template, $matches ) ) {
+			if ( preg_match( "#\\{short-story limit=['\"](.+?)['\"]\\}#i", $tplb->copy_template, $matches ) ) {
 				$count= intval($matches[1]);
 				$rowb['short_story'] = strip_tags( $rowb['short_story'], "<br>" );
 				$rowb['short_story'] = trim(str_replace( array("<br>",'<br />'), " ", $rowb['short_story'] ));
@@ -392,10 +394,27 @@ if( !$blockpro OR $clear_time_cache)
 				}
 				$tplb->set( $matches[0], $rowb['short_story'] );
 			} else 
-				$tplb->set( '{text}', $rowb['short_story'] );
+				$tplb->set( '{short-story}', $rowb['short_story'] );
 			
 			$tplb->set( '{full-link}', $full_link );
 			$tplb->set ( '{comments-num}', $rowb['comm_num'] );
+			
+			if( $rowb['allow_comm'] ) {				
+				$tplb->set( '[allow-comm]', "" );
+				$tplb->set( '[/allow-comm]', "" );			
+			} else {
+				$tplb->set_block( "'\\[allow-comm\\](.*?)\\[/allow-comm\\]'si", "" );
+			}
+
+			if ( $rowb['comm_num'] ) {
+				$tplb->set( '[comments]', "" );
+				$tplb->set( '[/comments]', "" );
+				$tplb->set_block( "'\\[not-comments\\](.*?)\\[/not-comments\\]'si", "" );
+			} else {
+				$tplb->set( '[not-comments]', "" );
+				$tplb->set( '[/not-comments]', "" );
+				$tplb->set_block( "'\\[comments\\](.*?)\\[/comments\\]'si", "" );
+			}
 			$tplb->set ( '{views}', $rowb['news_read'] );
 			/* конец кучки тегов  */
 			
@@ -406,14 +425,20 @@ if( !$blockpro OR $clear_time_cache)
 	} else {
 		$blockpro = '<strong style="color: red;">Указанный шаблон не сущестует</strong> ';
 	} 
+		$tplb->clear();
 		unset($tplb);
 		$db->free();
 		create_cache($cache_id."_".$block_id, $blockpro, $config['skin'] );
 }
 
-	if(!$relatedpro && !$blockpro) 
+	if(!$relatedpro && !$blockpro) {
 		$blockpro = '<strong style="color: red;">По заданным критериям материалов не обнаружено.</strong>';
-
+		unset($tplb);
+		$db->free();
+		create_cache($cache_id."_".$block_id, $blockpro, $config['skin'] );
+	}
+		
+	
 	if($relatedpro){
 		if($blockpro){
 			$tpl->set( '[related-news]', "" );
