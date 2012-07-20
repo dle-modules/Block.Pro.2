@@ -237,7 +237,7 @@ if( !$blockpro OR $clear_time_cache)
 						if (isset($info['extension'])) {
 							$info['extension'] = strtolower($info['extension']);
 							// это точно картинка?
-							if(in_array($info['extension'],array('jpg','jpeg','gif','png'))) {								
+							if(in_array($info['extension'],array('jpg','jpeg','gif','png')) and file_exists($xfieldsdata[$value[0]])) {
 								$file_name = strtolower ( basename ($xfieldsdata[$value[0]]));
 								$original_img = $xfieldsdata[$value[0]];
 								$file_name = $img_size."_".$file_name;
@@ -286,7 +286,7 @@ if( !$blockpro OR $clear_time_cache)
 					$info = pathinfo($url);				
 					if (isset($info['extension'])) {
 						$info['extension'] = strtolower($info['extension']);
-						if(in_array($info['extension'],array('jpg','jpeg','gif','png'))) {
+						if(in_array($info['extension'],array('jpg','jpeg','gif','png'))  and file_exists($url)) {
 							$original_img = $url;
 							$file_name = strtolower ( basename ( $url ));
 							$file_name = $img_size."_".$file_name;
