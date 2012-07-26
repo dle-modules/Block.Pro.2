@@ -20,18 +20,18 @@ if($showstat && $member_id['user_id'] == 1) {
 }
 
 /*************Дальше не нужно ничего трогать если не знаете, что делать *****************/
-if(!is_numeric($day)) 				$day = 30; 
-if(!is_string($show_cat)) 			$show_cat = "";
-if(!is_string($ignore_cat)) 		$ignore_cat = "";
-if(!is_numeric($start_from)) 		$start_from = 0;
-if(!is_numeric($news_num)) 			$news_num = 10;
-if(!is_string($img_xfield)) 		$img_xfield = "";
-if(!is_string($img_size)) 			$img_size = "60x60";
-if(!is_string($noimage)) 			$noimage = "noimage.png";
+if(!is_numeric($day))				$day = 30; 
+if(!is_string($show_cat))			$show_cat = "";
+if(!is_string($ignore_cat))			$ignore_cat = "";
+if(!is_numeric($start_from))		$start_from = 0;
+if(!is_numeric($news_num))			$news_num = 10;
+if(!is_string($img_xfield))			$img_xfield = "";
+if(!is_string($img_size))			$img_size = "60x60";
+if(!is_string($noimage))			$noimage = "noimage.png";
 if(!is_string($template))			$template = "";		
 if(!is_string($author))				$author = "";
 if(!is_string($xfilter))			$xfilter = "";
-if(!is_string($post_id)) 			$post_id = "";
+if(!is_string($post_id))			$post_id = "";
 
 //$img_size = intval($chk_img_size[0]).((count($chk_img_size)>=2)?'x'.intval($chk_img_size[1]):''); // Мало ли идиотов
 $author = @$db->safesql ( strip_tags ( str_replace ( '/', '', $author ) ) );
@@ -239,7 +239,7 @@ if( !$blockpro OR $clear_time_cache)
 						if (isset($info['extension'])) {
 							$info['extension'] = strtolower($info['extension']);
 							// это точно картинка?
-							if(in_array($info['extension'],array('jpg','jpeg','gif','png')) and file_exists($xfieldsdata[$value[0]])) {								
+							if(in_array($info['extension'],array('jpg','jpeg','gif','png'))) {								
 								$file_name = strtolower ( basename ($xfieldsdata[$value[0]]));
 								$original_img = $xfieldsdata[$value[0]];
 								$file_name = $img_size."_".$file_name;
@@ -288,7 +288,7 @@ if( !$blockpro OR $clear_time_cache)
 					$info = pathinfo($url);				
 					if (isset($info['extension'])) {
 						$info['extension'] = strtolower($info['extension']);
-						if(in_array($info['extension'],array('jpg','jpeg','gif','png'))  and file_exists($url)) {
+						if(in_array($info['extension'],array('jpg','jpeg','gif','png')) ) {
 							$original_img = $url;
 							$file_name = strtolower ( basename ( $url ));
 							$file_name = $img_size."_".$file_name;
