@@ -9,7 +9,7 @@ email: p13mm@yandex.ru
 =====================================================
 Файл:  block.pro.2.php
 ------------------------------------------------------
-Версия: 2.6.5 (20.07.2012)
+Версия: 2.6.6 (05.08.2012)
 =====================================================*/
 
 if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
@@ -289,7 +289,7 @@ if( !$blockpro OR $clear_time_cache)
 					if (isset($info['extension'])) {
 						$info['extension'] = strtolower($info['extension']);
 						if(in_array($info['extension'],array('jpg','jpeg','gif','png')) ) {
-							$original_img = $url;
+							$original_img = substr($url, strlen(ROOT_DIR));
 							$file_name = strtolower ( basename ( $url ));
 							$file_name = $img_size."_".$file_name;
 							if (!file_exists($dir.$file_name)) {
