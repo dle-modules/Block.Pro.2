@@ -9,7 +9,7 @@ email: p13mm@yandex.ru
 =====================================================
 Файл:  block.pro.2.php
 ------------------------------------------------------
-Версия: 2.6.6 (05.08.2012)
+Версия: 2.6.7 (25.08.2012)
 =====================================================*/
 
 if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
@@ -122,7 +122,7 @@ if( !$blockpro OR $clear_time_cache)
 		if ($top_rating) $sort_var = "rating DESC"; // По рейтингу
 		if ($top_views) $sort_var = "news_read DESC"; // По просмотрам
 		
-		if($author) $query_mod .= "AND autor='{$author}'";
+		if($author) $query_mod .= "AND autor regexp '[[:<:]](".str_replace(',', '|', $author).")[[:>:]]'";
 		
 		if($relatedpro) {
 			if( strlen( $row['full_story'] ) < strlen( $row['short_story'] ) ) $body = $row['short_story'];
