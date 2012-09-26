@@ -9,7 +9,7 @@ email: p13mm@yandex.ru
 =====================================================
 Файл:  block.pro.2.php
 ------------------------------------------------------
-Версия: 2.6.7 (25.08.2012)
+Версия: 2.6.8 (27.09.2012)
 =====================================================*/
 
 if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
@@ -336,8 +336,21 @@ if( !$blockpro OR $clear_time_cache)
 			
 			//Показ рейтинга
 			if( $rowb['allow_rate'] ) {
-				if( $config['short_rating'] and $user_group[$member_id['user_group']]['allow_rating'] ) $tplb->set( '{rating}', ShortRating( $rowb['id'], $rowb['rating'], $rowb['vote_num'], 1 ) );
-				else $tplb->set( '{rating}', ShortRating( $rowb['id'], $rowb['rating'], $rowb['vote_num'], 0 ) );
+
+				if( $config['short_rating'] and $user_group[$member_id['user_group']]['allow_rating']) {
+					if (floatval($config['version_id'])>=9.7)
+						$tplb->set( '{rating}', ShowRating( $rowb['id'], $rowb['rating'], $rowb['vote_num'], 1 ) );
+					else 
+						$tplb->set( '{rating}', ShortRating( $rowb['id'], $rowb['rating'], $rowb['vote_num'], 1 ) );
+					
+				}
+
+				else {
+					if (floatval($config['version_id'])>=9.7) 
+						$tplb->set( '{rating}', ShowRating( $rowb['id'], $rowb['rating'], $rowb['vote_num'], 0 ) );
+					else 
+						$tplb->set( '{rating}', ShortRating( $rowb['id'], $rowb['rating'], $rowb['vote_num'], 0 ) );
+				}
 				$tplb->set( '{vote-num}', $rowb['vote_num'] );
 				$tplb->set( '[rating]', "" );
 				$tplb->set( '[/rating]', "" );
