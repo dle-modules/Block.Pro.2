@@ -9,7 +9,7 @@ email: p13mm@yandex.ru
 =====================================================
 Файл:  block.pro.2.php
 ------------------------------------------------------
-Версия: 2.6.8 (27.09.2012)
+Версия: 2.6.9 (30.09.2012)
 =====================================================*/
 
 if(!defined('DATALIFEENGINE')){die("Мааамин ёжик, двиг скукожился!!!");}
@@ -411,6 +411,7 @@ if( !$blockpro OR $clear_time_cache)
 			
 			$tplb->set( '{full-link}', $full_link );
 			$tplb->set ( '{comments-num}', $rowb['comm_num'] );
+			$tplb->set ( '{news-id}', $rowb['id'] );
 			
 			if( $rowb['allow_comm'] ) {				
 				$tplb->set( '[allow-comm]', "" );
